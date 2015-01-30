@@ -45,9 +45,9 @@ def repair_phone_number(phone, debug=False):
     Given an arbitrary string that attempts to represent a phone number,
     return a best attempt to format the phone number according to ITU standards
 
-    If the phone number can not be repaired, the function reurns an empty string
+    If the phone number can not be repaired, the function returns an empty string
     """
-    phone_text = phone.encode('ascii', 'ignore') # encode to ascii
+    phone_text = phone.encode('ascii', 'ignore')  # encode to ascii
     phone_text = phone_text.lower()
     phone_text = phone_text.strip()
     extension_digits = None
@@ -64,16 +64,16 @@ def repair_phone_number(phone, debug=False):
     for c in list(phone_text):
         if c in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
             digits.append(c)
-    if len(digits) > 10:
+    if len(digits) > 10 or phone_text.rfind('x') > -1:
         # pull off the extension
-        i = phone_text.rfind(' ') # last blank
+        i = phone_text.rfind(' ')  # last blank
         if i > 0:
             extension = phone_text[i+1:]
             extension_digits = []
             for c in list(extension):
                 if c in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                     extension_digits.append(c)
-            digits = [] # recalc the digits
+            digits = []  # recalc the digits
             for c in list(phone_text[:i+1]):
                 if c in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                     digits.append(c)
@@ -84,7 +84,7 @@ def repair_phone_number(phone, debug=False):
             for c in list(extension):
                 if c in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                     extension_digits.append(c)
-            digits = [] # recalc the digits
+            digits = []  # recalc the digits
             for c in list(phone_text[:i+1]):
                 if c in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                     digits.append(c)
@@ -105,9 +105,9 @@ def repair_phone_number(phone, debug=False):
         updated_phone = '('+"".join(digits[0:3])+') '+"".join(digits[3:6])+ \
             '-'+"".join(digits[6:10])
     elif len(digits) == 5 and digits[0] == '2': # UF special
-        updated_phone = '(352) 392' + "".join(digits[1:5])
+        updated_phone = '(352) 392-' + "".join(digits[1:5])
     elif len(digits) == 5 and digits[0] == '3': # another UF special
-        updated_phone = '(352) 273' + "".join(digits[1:5])
+        updated_phone = '(352) 273-' + "".join(digits[1:5])
     else:
         updated_phone = '' # no repair
         extension_digits = None
